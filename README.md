@@ -1,0 +1,1 @@
+Got asked to implement this simple button game in a coding challenge. Ran out of time completing this. Their internet cutting out in the middle of the interview didn't exactly help me.
