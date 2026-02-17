@@ -43,25 +43,34 @@ function App() {
       setResetGameOnNextClick(true);
     }
 
-    
-    if (targets.every(target => clickedButtons.includes(target) || target === index)) {
-      setWinState(true);
+    // new clicked buttons must only include the same indexes as targets in order to set the win to true
+    const newClickedButtons = [...clickedButtons, index];
+    if (newClickedButtons.length !== gridSize) {
+      return;
     }
+    for (const index of newClickedButtons) {
+      if (!targets.includes(index)) {
+        return;
+      }
+    }
+    setWinState(true);
+  }
+
+  const handleWinButtonClick = () => {
+    setWinState(false);
+    setClickedButtons([]);
+    generateNewTargets();
   }
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div className='container'>
       <input type="range" min="2" max="20" value={gridSize} onChange={(e) => setGridSize(parseInt(e.target.value))}></input>
       {`Grid Size: ${gridSize} x ${gridSize}`}
       {winState && (
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-          <h1 style={{ color: 'white', fontSize: '2rem' }}>You Win!</h1>
-          <button style={{ marginLeft: '20px', padding: '10px 20px', fontSize: '1rem' }} onClick={() => {
-            setWinState(false);
-            setClickedButtons([]);
-            generateNewTargets();
-          }}>Play Again</button>
+        <div className='win-state-container'>
+          <h1 className='win-state-header'>You Win!</h1>
+          <button className='win-state-button' onClick={handleWinButtonClick}>Play Again</button>
         </div>
       )}
       <div style={{ height: `${gridSize * 100}px`, width: `${gridSize * 100}px`, backgroundColor: 'lightgray'}}>
@@ -69,7 +78,6 @@ function App() {
           <div key={`row-${row}`} style={{ display: 'flex' }}>
           {Array.from({ length: gridSize }, (_, col) => {
             const index = row * gridSize + col;
-
             const color = clickedButtons.includes(index) && targets.includes(index) 
               ? 'green' 
               : clickedButtons.includes(index) 
